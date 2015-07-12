@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Nan &amp; Bob's</title>
+		<link rel="stylesheet" href="jquery.mobile-1.1.0.min.css" />
+		<script src="jquery.min.js"></script>
+		<script src="jquery.mobile-1.1.0.min.js"></script>
+		<script type="text/javascript">
+			document.addEventListener("deviceready", onDeviceReady, false);
+			function onDeviceReady() {
+				navigator.compass.getCurrentHeading(onCompassSuccess, onCompassError);
+				navigator.geolocation.getCurrentPosition(onGeoSuccess, onGeoError);
+			}
+			function onGeoSuccess(position) {
+				var element = document.getElementById('geolocation');
+				$('#info').append('Latitude: ' + position.coords.latitude + '<br />' +
+								'Longitude: ' + position.coords.longitude + '<br />' +
+								'Altitude: ' + position.coords.altitude	+ '<br />' +
+								'Accuracy: ' + position.coords.accuracy	+ '<br />' +
+								'Altitude Accuracy: ' + position.coords.altitudeAccuracy + '<br />' +
+								'Heading: '	+ position.coords.heading + '<br />' +
+								'Speed: ' + position.coords.speed + '<br />' +
+								'Timestamp: ' + new Date(position.timestamp) + '<hr />');
+			}
+
+			function onGeoError(error) {
+				alert('code: '	+ error.code	+ '\n' + 'message: ' + error.message + '\n');
+			}
+
+			function onCompassSuccess(heading) {
+				$('#info').append('Compass heading: ' + heading + '<hr />');
+			}
+
+			function onCompassError() {
+				alert('onError!');
+			}
+
+
+		</script>
+	</head>
+	<body>
+		<div data-role="page" id="home">
+			<div data-role="header">
+				<h2>Nan &amp; Bob's</h2>
+			</div>
+			<div data-role="content">
+				<p id="info"></p>
+			</div>
+			<div data-role="footer">
+				<h3>
+					123 Fake St. Anywhere USA
+				</h3>
+			</div>
+		</div>
+	</body>
+</html>

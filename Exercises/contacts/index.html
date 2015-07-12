@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Nan &amp; Bob's</title>
+        <link rel="stylesheet" href="jquery.mobile-1.1.0.min.css" />
+        <script src="jquery.min.js"></script>
+        <script src="jquery.mobile-1.1.0.min.js"></script>
+		<script type="text/javascript">
+
+		    document.addEventListener("deviceready",onDeviceReady,false);
+		    function onDeviceReady() {
+
+        		//add a click handler for the #searchButton
+				$('#searchButton').click(function() {
+				
+			var options = new ContactFindOptions();
+	        		
+					//get the current value of the #searchBox input
+					options.filter = $('#searchBox').val();
+	        		options.multiple = true;
+	        		var fields = ["displayName", "name"];
+	        		navigator.contacts.find(fields, onSuccess, onError, options);
+				});
+
+				//add a click handler for the #addButton
+				$('addButton').click(function() {
+					var contact = navigator.contacts.create();
+					
+					//get the value of the #fullname input
+					contact.displayName = $('#fullname').val();
+					
+					//get the value of the #nickname input
+					contact.nickname = $('nickname').val();
+					contact.save(onContactAddSuccess,onContactAddError);
+				});
+		    }
+
+		    function onContactAddSuccess(contact) {
+		    	//clear the #fullname and #nickname fields
+				$('fullname').val('');
+				$('nickname').val('');
+				
+				//generate an alert that the contact has been added
+				alert('Contact Added');
+			}
+
+			function onContactAddError(contactError) {
+			    alert("Error = " + contactError.code);
+			}
+
+		    function onSuccess(contacts) {
+		    	if (contacts.length == 0) {
+		    		//add a list item to #contacts saying that no contacts matched the user's search
+					$('contacts').html('<li><em>No contacts matched your search.</em></li>');
+					
+		    		//vibrate the phone
+					navigator.notification.vibrate(100);
+		    		
+		    	} else {
+			    	//loop over the contacts and add a list item to #contacts for each
+					$('contacts').append('<li>' + contacts[i].displayName + '</li>');
+			    }
+		    }
+
+		    function onError() {
+		        alert('onError!');
+		    }
+
+
+		</script>
+    </head>
+    <body>
+        <div data-role="page" id="home">
+            <div data-role="header">
+                <h2>Nan &amp; Bob's</h2>
+            </div>
+            <div data-role="content">
+                <ul id="contacts"></ul>
+                <input type="text" name="search" id="searchBox"> 
+				<button type="submit" id="searchButton">Search</button>
+				<hr>
+				<input type="text" name="text" id="fullname" placeholder="Full Name">
+				<input type="text" name="text" id="nickname" placeholder="Nickname">
+				<button type="submit" id="addButton">Add</button>
+            </div>
+            <div data-role="footer">
+                <h3>
+                    123 Fake St. Anywhere USA
+                </h3>
+            </div>
+        </div>
+    </body>
+</html>

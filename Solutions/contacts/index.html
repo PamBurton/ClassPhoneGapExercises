@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Nan &amp; Bob's</title>
+		<link rel="stylesheet" href="jquery.mobile-1.1.0.min.css" />
+		<script src="jquery.min.js"></script>
+		<script src="jquery.mobile-1.1.0.min.js"></script>
+		<script type="text/javascript">
+
+			document.addEventListener("deviceready",onDeviceReady,false);
+			function onDeviceReady() {
+
+				$('#searchButton').click(function() {
+					//set the variable "options" to hold seach options
+			var options = new ContactFindOptions();
+			//set the search options to find only those contacts which match the value entered by the user (in field #searchBox)
+					options.filter = $('#searchBox').val();
+					//allow multiple results
+					options.multiple = true;
+					var fields = ["displayName", "name"];
+					//find those contacts which match the filter options
+					navigator.contacts.find(fields, onSuccess, onError, options);
+				});
+
+				$('#addButton').click(function() {
+					//when the "addButton" button is clicked, create a new contact
+					var contact = navigator.contacts.create();
+					//set the displayName to the value of the #fullname field
+					contact.displayName = $('#fullname').val();
+					//set the nickname to the value of the #nickname field
+					contact.nickname = $('#nickname').val();
+					//save the contact
+					contact.save(onContactAddSuccess,onContactAddError);
+				});
+			}
+
+			function onContactAddSuccess(contact) {
+				$('#fullname').val('');
+				$('#nickname').val('');
+				alert('Contact Added');
+			}
+
+			function onContactAddError(contactError) {
+				alert("Error = " + contactError.code);
+			}
+
+			function onSuccess(contacts) {
+				if (contacts.length == 0) {
+					$('#contacts').html('<li><em>No contacts matched your search</em></li>');
+					navigator.notification.vibrate(100);
+				} else {
+					$('#contacts').html('');
+					for (var i=0; i<contacts.length; i++) {
+						$('#contacts').append('<li>'+contacts[i].displayName+'</li>');
+					}
+				}
+			}
+
+			function onError() {
+				alert('onError!');
+			}
+
+
+		</script>
+	</head>
+	<body>
+		<div data-role="page" id="home">
+			<div data-role="header">
+				<h2>Nan &amp; Bob's</h2>
+			</div>
+			<div data-role="content">
+				<ul id="contacts"></ul>
+				<input type="text" name="search" id="searchBox"> 
+				<button type="submit" id="searchButton">Search</button>
+				<hr>
+				<input type="text" name="text" id="fullname" placeholder="Full Name">
+				<input type="text" name="text" id="nickname" placeholder="Nickname">
+				<button type="submit" id="addButton">Add</button>
+			</div>
+			<div data-role="footer">
+				<h3>
+					123 Fake St. Anywhere USA
+				</h3>
+			</div>
+		</div>
+	</body>
+</html>
